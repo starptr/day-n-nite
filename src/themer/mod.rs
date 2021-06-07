@@ -1,3 +1,4 @@
+mod system_windows;
 use std::str::FromStr;
 use std::string::ToString;
 use std::path::PathBuf;
@@ -31,7 +32,7 @@ pub fn get_config_filepath() -> PathBuf {
 pub fn get_mode() -> Result<Mode, GetError> {
     let config_content = fs::read_to_string(get_config_filepath());
     match config_content {
-        Ok(mut mode) => {
+        Ok(mode) => {
             match Mode::from_str(&mode) {
                 Ok(mode) => Ok(mode),
                 Err(_) => Err(GetError::UnknownMode),
@@ -52,6 +53,7 @@ pub fn set_day() -> Result<Mode, SetError> {
 }
 
 fn set_mode(mode: Mode) -> Result<Mode, SetError> {
+    system_windows::set(&mode);
     fs::write(get_config_filepath(), mode.to_string())
-        .map_or_else(|e| Err(SetError::WriteFailure), |_| Ok(mode))
+        .map_or_else(|_| Err(SetError::WriteFailure), |_| Ok(mode))
 }
