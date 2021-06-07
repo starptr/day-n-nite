@@ -1,0 +1,12 @@
+[package]
+name = "day-n-nite"
+version = "0.1.0"
+authors = ["Yuto Nishida <starptr@users.noreply.github.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+dirs = "3.0"
+strum = "0.21"
+strum_macros = "0.21"

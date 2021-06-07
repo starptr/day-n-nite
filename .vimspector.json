@@ -1,0 +1,20 @@
+{
+	"configurations": {
+		"Launch": {
+			"adapter": "CodeLLDB",
+			"configuration": {
+				"request": "launch",
+				"program": "${workspaceRoot}/target/debug/day-n-nite",
+				"args": []
+			},
+			"breakpoints": {
+				"exception": {
+					"caught": "N",
+					"uncaught": "Y",
+					"cpp_throw": "Y",
+					"cpp_catch": "Y"
+				}
+			}
+		}
+	}
+}
