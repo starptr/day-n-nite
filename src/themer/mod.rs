@@ -1,4 +1,5 @@
 mod system_windows;
+mod wezterm;
 use std::str::FromStr;
 use std::string::ToString;
 use std::path::PathBuf;
@@ -14,9 +15,11 @@ pub enum GetError {
 
 pub enum SetError {
     WriteFailure,
+    ReadFailure,
+    RegEditFailure,
 }
 
-#[derive(Display, PartialEq, EnumString)]
+#[derive(Display, PartialEq, EnumString, Clone, Copy)]
 pub enum Mode {
     Day,
     Night,
@@ -45,15 +48,17 @@ pub fn get_mode() -> Result<Mode, GetError> {
 }
 
 pub fn set_night() -> Result<Mode, SetError> {
-    set_mode(Mode::Night)
+    set_mode(Mode::Night).map(|_| Mode::Night)
 }
 
 pub fn set_day() -> Result<Mode, SetError> {
-    set_mode(Mode::Day)
+    set_mode(Mode::Day).map(|_| Mode::Day)
 }
 
-fn set_mode(mode: Mode) -> Result<Mode, SetError> {
-    system_windows::set(&mode);
+fn set_mode(mode: Mode) -> Result<(), SetError> {
     fs::write(get_config_filepath(), mode.to_string())
-        .map_or_else(|_| Err(SetError::WriteFailure), |_| Ok(mode))
+        .map_or_else(|_| Err(SetError::WriteFailure), |_| Ok(mode))?;
+    system_windows::set(mode)?;
+    wezterm::set()?;
+    Ok(())
 }
