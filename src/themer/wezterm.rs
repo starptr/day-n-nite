@@ -3,7 +3,7 @@ use dirs;
 use super::SetError;
 
 // Force WezTerm to reload config to read new color mode
-pub fn set() -> Result<(), SetError> {
+pub fn update() -> Result<(), SetError> {
     let mut wezterm_config_file = dirs::home_dir().unwrap();
     wezterm_config_file.push(".config");
     wezterm_config_file.push("wezterm");
