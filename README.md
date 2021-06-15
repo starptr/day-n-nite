@@ -5,7 +5,7 @@ A small command line tool to quickly switch light and dark modes
 - Windows 10's system theme
 - WezTerm
 - bat
-- vim (WIP)
+- vim
 
 ## Usage
 Run `day-n-nite` from the command line.

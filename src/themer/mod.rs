@@ -35,6 +35,7 @@ pub enum ModuleError {
     SystemWindows(SetError),
     Wezterm(SetError),
     Terminal(SetError),
+    Vim(SetError),
     Bat(SetError),
 }
 
@@ -75,11 +76,13 @@ pub fn set_day() -> Result<Mode, ModuleError> {
 }
 
 fn set_mode(mode: Mode) -> Result<(), ModuleError> {
+    // Must write to disk first
     fs::write(get_config_filepath(), mode.to_string())
         .map_or_else(|_| Err(ModuleError::DayNNite(SetError::WriteFailure)), |_| Ok(mode))?;
     system_windows::set(mode)?;
     wezterm::update()?;
     terminal::set(mode)?;
+    vim::update()?;
     bat::set(mode)?;
     Ok(())
 }
