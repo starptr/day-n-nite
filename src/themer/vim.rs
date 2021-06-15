@@ -1,25 +1,19 @@
 use super::ModuleError;
 use lazy_static::*;
-use regex::{Regex, RegexSet};
+use regex::RegexSet;
 use sysinfo::{self, ProcessExt, Signal, SystemExt};
-
-#[derive(Clone)]
-enum RegexList {
-    Singular(Regex),
-    Multiple(RegexSet),
-}
 
 pub fn update() -> Result<(), ModuleError> {
     lazy_static! {
-        static ref NVP_HEADLESS_CMD_RE: Vec<RegexList> = [
-            RegexList::Singular(Regex::new(r"^/tmp/.*/nvim$").unwrap()),
-            RegexList::Singular(Regex::new(r"^--headless$").unwrap()),
-            RegexList::Singular(Regex::new(r"^--listen$").unwrap()),
-            RegexList::Singular(Regex::new(r"^localhost:\d+$").unwrap()),
+        static ref NVP_HEADLESS_CMD_RE: Vec<RegexSet> = [
+            RegexSet::new(&[r"^/tmp/.*/nvim$"]).unwrap(),
+            RegexSet::new(&[r"^--headless$"]).unwrap(),
+            RegexSet::new(&[r"^--listen$"]).unwrap(),
+            RegexSet::new(&[r"^localhost:\d+$"]).unwrap(),
         ]
         .to_vec();
-        static ref TUI_NON_HEADLESS_RE: Vec<RegexList> =
-            [RegexList::Multiple(RegexSet::new(&[r"^/tmp/.*/nvim$", r"^nvim$", r"^vim$",]).unwrap())].to_vec();
+        static ref TUI_NON_HEADLESS_RE: Vec<RegexSet> =
+            [RegexSet::new(&[r"^/tmp/.*/nvim$", r"^nvim$", r"^vim$",]).unwrap()].to_vec();
     }
     let mut sys = sysinfo::System::new();
     sys.refresh_processes();
@@ -34,13 +28,10 @@ pub fn update() -> Result<(), ModuleError> {
     Ok(())
 }
 
-fn is_match_n(command: &[String], first_n_re: Vec<RegexList>) -> bool {
+fn is_match_n(command: &[String], first_n_re: Vec<RegexSet>) -> bool {
     command.len() >= first_n_re.len()
         && first_n_re
             .iter()
             .enumerate()
-            .all(|(index, re)| match &re {
-                &RegexList::Singular(re) => re.is_match(&command[index]),
-                &RegexList::Multiple(re) => re.is_match(&command[index]),
-            })
+            .all(|(index, re)| re.is_match(&command[index]))
 }
