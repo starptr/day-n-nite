@@ -2,6 +2,7 @@ mod themer;
 use std::string::ToString;
 
 fn main() {
+    println!("\x1b]11;#000000\x07");
     let cur_mode = themer::get_mode();
 
     let set_result = match cur_mode {
@@ -17,8 +18,8 @@ fn main() {
         Ok(mode) => {
             println!("Set to {} Mode.", mode.to_string());
         },
-        Err(_) => {
-            eprintln!("Setting mode failed!");
+        Err(e) => {
+            eprintln!("Error: {:?}", e);
         }
     };
 }

@@ -2,6 +2,7 @@ mod system_windows;
 mod wezterm;
 mod vim;
 mod bat;
+mod terminal;
 use std::str::FromStr;
 use std::string::ToString;
 use std::path::PathBuf;
@@ -20,10 +21,21 @@ pub enum GetError {
     NoMode,
 }
 
+#[derive(Debug)]
 pub enum SetError {
     WriteFailure,
     ReadFailure,
     RegEditFailure,
+    ParseFailure,
+}
+
+#[derive(Debug)]
+pub enum ModuleError {
+    DayNNite(SetError),
+    SystemWindows(SetError),
+    Wezterm(SetError),
+    Terminal(SetError),
+    Bat(SetError),
 }
 
 #[derive(Display, PartialEq, EnumString, Clone, Copy)]
@@ -54,19 +66,20 @@ pub fn get_mode() -> Result<Mode, GetError> {
     }
 }
 
-pub fn set_night() -> Result<Mode, SetError> {
+pub fn set_night() -> Result<Mode, ModuleError> {
     set_mode(Mode::Night).map(|_| Mode::Night)
 }
 
-pub fn set_day() -> Result<Mode, SetError> {
+pub fn set_day() -> Result<Mode, ModuleError> {
     set_mode(Mode::Day).map(|_| Mode::Day)
 }
 
-fn set_mode(mode: Mode) -> Result<(), SetError> {
+fn set_mode(mode: Mode) -> Result<(), ModuleError> {
     fs::write(get_config_filepath(), mode.to_string())
-        .map_or_else(|_| Err(SetError::WriteFailure), |_| Ok(mode))?;
+        .map_or_else(|_| Err(ModuleError::DayNNite(SetError::WriteFailure)), |_| Ok(mode))?;
     system_windows::set(mode)?;
     wezterm::update()?;
+    terminal::set(mode)?;
     bat::set(mode)?;
     Ok(())
 }
