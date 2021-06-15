@@ -1,4 +1,3 @@
-use super::SetError;
 use super::ModuleError;
 use dirs;
 use super::simple_string_replace;

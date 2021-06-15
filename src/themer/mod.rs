@@ -35,7 +35,7 @@ pub enum ModuleError {
     SystemWindows(SetError),
     Wezterm(SetError),
     Terminal(SetError),
-    Vim(SetError),
+    _Vim(SetError),
     Bat(SetError),
 }
 
