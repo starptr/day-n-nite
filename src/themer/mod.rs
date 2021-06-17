@@ -3,11 +3,13 @@ mod wezterm;
 mod vim;
 mod bat;
 mod terminal;
+mod emit;
 use std::str::FromStr;
 use std::string::ToString;
 use std::path::PathBuf;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+use clap::ArgMatches;
 use strum_macros::EnumString;
 use strum_macros::Display;
 use std::string::String;
@@ -25,7 +27,7 @@ pub enum GetError {
 pub enum SetError {
     WriteFailure,
     ReadFailure,
-    RegEditFailure,
+    CommandFailure,
     ParseFailure,
 }
 
@@ -37,12 +39,20 @@ pub enum ModuleError {
     Terminal(SetError),
     _Vim(SetError),
     Bat(SetError),
+    Emit(SetError),
 }
 
 #[derive(Display, PartialEq, EnumString, Clone, Copy)]
 pub enum Mode {
     Day,
     Night,
+}
+
+pub fn toggle(mode: Mode) -> Mode {
+    match mode {
+        Mode::Night => Mode::Day,
+        Mode::Day => Mode::Night,
+    }
 }
 
 pub fn get_config_filepath() -> PathBuf {
@@ -67,15 +77,7 @@ pub fn get_mode() -> Result<Mode, GetError> {
     }
 }
 
-pub fn set_night() -> Result<Mode, ModuleError> {
-    set_mode(Mode::Night).map(|_| Mode::Night)
-}
-
-pub fn set_day() -> Result<Mode, ModuleError> {
-    set_mode(Mode::Day).map(|_| Mode::Day)
-}
-
-fn set_mode(mode: Mode) -> Result<(), ModuleError> {
+pub fn set_mode(mode: Mode, arg_matches: ArgMatches) -> Result<Mode, ModuleError> {
     // Must write to disk first
     fs::write(get_config_filepath(), mode.to_string())
         .map_or_else(|_| Err(ModuleError::DayNNite(SetError::WriteFailure)), |_| Ok(mode))?;
@@ -84,7 +86,10 @@ fn set_mode(mode: Mode) -> Result<(), ModuleError> {
     terminal::set(mode)?;
     vim::update()?;
     bat::set(mode)?;
-    Ok(())
+    if !arg_matches.is_present("no_emit") {
+        emit::set(mode)?;
+    }
+    Ok(mode)
 }
 
 // Replace 〔light〜dark〕 with light if day, dark if night

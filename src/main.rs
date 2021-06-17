@@ -1,16 +1,16 @@
 mod themer;
+mod cli;
 use std::string::ToString;
 
 fn main() {
+    let arg_matches = cli::get_app().get_matches();
+
     let cur_mode = themer::get_mode();
 
     let set_result = match cur_mode {
-        Ok(mode) => match mode {
-            themer::Mode::Day => themer::set_night(),
-            themer::Mode::Night => themer::set_day(),
-        },
-        Err(themer::GetError::NoMode) => themer::set_day(),
-        Err(themer::GetError::UnknownMode) => themer::set_day(),
+        Ok(mode) => themer::set_mode(themer::toggle(mode), arg_matches),
+        Err(themer::GetError::NoMode) => themer::set_mode(themer::Mode::Day, arg_matches),
+        Err(themer::GetError::UnknownMode) => themer::set_mode(themer::Mode::Day, arg_matches),
     };
 
     match set_result {
