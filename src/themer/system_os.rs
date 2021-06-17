@@ -3,10 +3,12 @@ use super::Mode;
 use super::SetError;
 use super::ModuleError;
 
+use std::env::consts::OS;
+
 // Should be called on every system
 // OS conditional is done in the function
 pub fn set(mode: Mode) -> Result<(), ModuleError> {
-    if (env!("IS_WSL") == "true") || cfg!(target_os = "windows") {
+    if (env!("IS_WSL") == "true") || OS == "windows" {
         Command::new("reg.exe")
             .args(&["add", r"HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize", "/v", "AppsUseLightTheme", "/t", "REG_DWORD", "/d", if mode == Mode::Day {"1"} else {"0"}, "/f"]).output().map_err(|_| ModuleError::SystemWindows(SetError::RegEditFailure))?;
         Command::new("reg.exe")

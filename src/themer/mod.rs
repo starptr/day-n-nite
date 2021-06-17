@@ -1,4 +1,4 @@
-mod system_windows;
+mod system_os;
 mod wezterm;
 mod vim;
 mod bat;
@@ -79,7 +79,7 @@ fn set_mode(mode: Mode) -> Result<(), ModuleError> {
     // Must write to disk first
     fs::write(get_config_filepath(), mode.to_string())
         .map_or_else(|_| Err(ModuleError::DayNNite(SetError::WriteFailure)), |_| Ok(mode))?;
-    system_windows::set(mode)?;
+    system_os::set(mode)?;
     wezterm::update()?;
     terminal::set(mode)?;
     vim::update()?;
