@@ -11,7 +11,7 @@ pub fn set(mode: Mode) -> Result<(), ModuleError> {
             .map_err(|_| ModuleError::Emit(SetError::CommandFailure))?;
     } else if OS == "windows" {
         Command::new("wsl")
-            .args(&["--", "day-n-nite", if mode == Mode::Day { "-d" } else { "-n" }, "--no-emit"])
+            .args(&["--", "zsh", "-ic", "day-n-nite", if mode == Mode::Day { "-d" } else { "-n" }, "--no-emit"])
             .output()
             .map_err(|_| ModuleError::Emit(SetError::CommandFailure))?;
     }
