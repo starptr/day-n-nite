@@ -15,16 +15,18 @@ pub fn update() -> Result<(), ModuleError> {
         static ref TUI_NON_HEADLESS_RE: Vec<RegexSet> =
             [RegexSet::new(&[r"^/tmp/.*/nvim$", r"^nvim$", r"^vim$",]).unwrap()].to_vec();
     }
-    let mut sys = sysinfo::System::new();
-    sys.refresh_processes();
-    sys.get_processes().iter().for_each(|(_pid, process)| {
-        let command = process.cmd();
-        if is_match_n(command, NVP_HEADLESS_CMD_RE.to_vec())
-            || is_match_n(command, TUI_NON_HEADLESS_RE.to_vec())
-        {
-            process.kill(Signal::User1);
-        };
-    });
+    if option_env!("IS_WSL").unwrap_or("false") == "true" {
+        let mut sys = sysinfo::System::new();
+        sys.refresh_processes();
+        sys.get_processes().iter().for_each(|(_pid, process)| {
+            let command = process.cmd();
+            if is_match_n(command, NVP_HEADLESS_CMD_RE.to_vec())
+                || is_match_n(command, TUI_NON_HEADLESS_RE.to_vec())
+            {
+                process.kill(Signal::User1);
+            };
+        });
+    }
     Ok(())
 }
 
