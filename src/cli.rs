@@ -11,4 +11,17 @@ pub fn get_app() -> App<'static, 'static> {
                 .short("m")
                 .long("no-emit"),
         )
+        .arg(
+            Arg::with_name("daymode")
+                .help("Force day mode")
+                .short("d")
+                .long("day"),
+        )
+        .arg(
+            Arg::with_name("nightmode")
+                .help("Force night moode")
+                .short("n")
+                .long("night")
+                .conflicts_with("daymode"),
+        )
 }
