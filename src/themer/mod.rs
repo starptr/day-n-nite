@@ -6,7 +6,6 @@ mod terminal;
 mod vim;
 mod wezterm;
 use clap::ArgMatches;
-use dirs;
 use lazy_static::*;
 use regex::Regex;
 use std::fs;
@@ -15,7 +14,6 @@ use std::io::{BufRead, BufReader};
 use std::path::PathBuf;
 use std::str::FromStr;
 use std::string::String;
-use std::string::ToString;
 use strum_macros::Display;
 use strum_macros::EnumString;
 
