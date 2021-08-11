@@ -5,6 +5,7 @@ mod system_os;
 mod terminal;
 mod vim;
 mod wezterm;
+mod alacritty;
 use clap::ArgMatches;
 use lazy_static::*;
 use regex::Regex;
@@ -39,6 +40,7 @@ pub enum ModuleError {
     _Vim(SetError),
     Bat(SetError),
     Emit(SetError),
+    Alacritty(SetError),
 }
 
 #[derive(Display, PartialEq, EnumString, Clone, Copy)]
@@ -73,6 +75,7 @@ pub fn set_mode(mode: Mode, arg_matches: ArgMatches) -> Result<Mode, ModuleError
     terminal::set(mode)?;
     vim::update()?;
     bat::set(mode)?;
+    alacritty::set(mode)?;
     if !arg_matches.is_present("no_emit") {
         emit::set(mode)?;
     }
