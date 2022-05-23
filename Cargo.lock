@@ -157,6 +157,7 @@ dependencies = [
  "clap",
  "config",
  "directories",
+ "serde",
  "toml",
 ]
 

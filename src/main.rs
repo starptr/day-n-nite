@@ -29,17 +29,12 @@ enum Commands {
 fn main() {
     let cli = Cli::parse();
 
-    let res = match &cli.command {
-        None | Some(Commands::Toggle) => {
-            let target_theme = get_theme().invert();
-            set_theme(target_theme)
-        }
-        Some(Commands::Add{ filename }) => {
+    let res = match cli.command {
+        None | Some(Commands::Toggle) => cmd_toggle(),
+        Some(Commands::Add{ filename }) => cmd_add(filename),
+        Some(_) => {
             Ok(())
         }
-        Some(_) => {
-            panic!("Command not implemented")
-        }
     };
-    println!("{:?}", get_pathstr("yeah".to_string()));
+    println!("{:?}", get_pathstr("../../../bin".to_string()));
 }

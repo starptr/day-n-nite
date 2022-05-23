@@ -45,21 +45,13 @@ mod tests {
 
     use super::*;
 
-    fn get_abs_home_path() -> PathBuf {
-        let userdirs = UserDirs::new().unwrap();
-        userdirs.home_dir().to_owned()
-    }
-
     #[test]
-    fn test_simple_pathstr() {
+    fn simple_pathstr() {
         let res = get_pathstr("yeah".to_string()).unwrap();
-        // Assumption: source exists under home
-        let expected =  {
-            let expected_builder = env::current_dir().unwrap().join("yeah");
-            let expected_builder = expected_builder.strip_prefix(get_abs_home_path()).unwrap();
-            let expected_builder = expected_builder.to_str().unwrap();
-            Path::new("~").join(expected_builder).to_str().unwrap().to_owned()
-        };
+        let expected = env::current_dir().unwrap().join("yeah");
+        let expected = expected.to_str().unwrap();
+        println!("{}", res);
+        println!("{}", expected);
         assert_eq!(res, expected);
     }
 }
