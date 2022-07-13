@@ -1,12 +1,16 @@
 use std::path::{Path, PathBuf};
 
-use directories::UserDirs;
-
+/*
+Writes a string to a file
+*/
 pub fn write_data(path: &Path, data: &str) -> Result<(), String> {
     use std::fs;
     fs::write(path, data).map(|_| ()).map_err(|e| e.to_string())
 }
 
+/*
+Reads a file into a string
+*/
 pub fn read_data(path: &Path) -> Result<String, String> {
     use std::fs;
     fs::read_to_string(path).map_err(|e| e.to_string())
@@ -27,6 +31,9 @@ pub fn get_abspath(input_filename: String) -> Result<PathBuf, String> {
     Ok(path)
 }
 
+/*
+Creates a lambda that prepends param with a prefix and a colon (owned)
+*/
 pub fn with_prefix<'a, T: ToString>(prefix: &'a str) -> impl Fn(T) -> String + 'a {
     |e| prefix.to_string() + ": " + &e.to_string()
 }

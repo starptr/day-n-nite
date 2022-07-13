@@ -1,5 +1,8 @@
 use crate::dnn::Theme;
 
+/*
+Retrieves the OS theme
+*/
 pub fn get_system_theme() -> Theme {
     use std::process::Command;
     if cfg!(target_os = "macos") {
