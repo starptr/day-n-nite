@@ -1,6 +1,9 @@
 mod os;
 mod dnn;
 mod util;
+mod system_info;
+mod dnn_configurator;
+mod themed_application;
 
 use dnn::*;
 use clap::{Parser, Subcommand, ArgEnum};

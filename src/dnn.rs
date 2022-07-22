@@ -1,3 +1,4 @@
+use std::fmt;
 use std::ffi::OsStr;
 use std::fs;
 use std::fs::File;
@@ -31,6 +32,26 @@ impl Theme {
         match self {
             Theme::Dark => Theme::Light,
             Theme::Light => Theme::Dark,
+        }
+    }
+}
+
+impl std::ops::Not for Theme {
+    type Output = Self;
+
+    fn not(self) -> Self::Output {
+        match self {
+            Theme::Dark => Theme::Light,
+            Theme::Light => Theme::Dark,
+        }
+    }
+}
+
+impl fmt::Display for Theme {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            Theme::Light => write!(f, "Light"),
+            Theme::Dark => write!(f, "Dark"),
         }
     }
 }
