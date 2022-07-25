@@ -4,6 +4,7 @@ mod util;
 mod system_info;
 mod dnn_configurator;
 mod themed_application;
+mod std_wrapper;
 
 use dnn::*;
 use clap::{Parser, Subcommand, ArgEnum};

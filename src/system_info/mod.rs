@@ -2,7 +2,7 @@ pub mod macos;
 
 use std::path::PathBuf;
 
-use crate::themed_application::ThemedSystem;
+use crate::themed_application::Themeable;
 
 use super::*;
 
